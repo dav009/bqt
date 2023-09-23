@@ -54,6 +54,8 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [ go_1_21 gopls gotools golint clang_14 goreleaser ];
             GOROOT = "${pkgs.go_1_21}/share/go";
+            CGO_ENABLED = "1";
+            CXX = "clang++";
           };
         });
 
