@@ -105,8 +105,12 @@ this test:
 
 You can use the nix flake to build/run/develop this project:
 
-- `nix build github:dav009/bqt`
+- `nix profile install github:dav009/bqt`
 - `bqt --help`
+
+You can also use the flake to build/run:
+- `nix build github:dav009/bqt`
+- `nix run github:dav009/bqt`
 
 ### Other
 
