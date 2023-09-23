@@ -29,6 +29,7 @@
               pname = "bqt";
               inherit version;
               src = ./.;
+              CGO_ENABLED = 1;
               vendorSha256 =
                 "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
             };
@@ -56,6 +57,7 @@
             GOROOT = "${pkgs.go_1_21}/share/go";
             CGO_ENABLED = "1";
             CXX = "clang++";
+            CC = "clang";
           };
         });
 
