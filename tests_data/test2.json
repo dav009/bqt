@@ -1,0 +1,26 @@
+{
+    "name": "simple_test",
+    "file": "tests_data/test2.sql",
+    "mocks": {
+        "`dataset`.`table1`": {
+            "filepath": "tests_data/test2_in1.csv",
+            "types": {
+                  "column1": "string"
+            }
+        },
+        "`dataset`.`table2`": {
+            "filepath": "tests_data/test2_in2.csv",
+            "types": {
+                "column2": "string",
+                "v": "FLOAT64"
+            }
+        }
+    },
+    "output": {
+        "filepath": "tests_data/out2.csv",
+          "types": {
+                "column2": "string",
+                "v": "FLOAT64"
+            }
+    }
+}

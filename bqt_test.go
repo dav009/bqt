@@ -72,9 +72,28 @@ func TestParseJson(t *testing.T) {
 }
 
 func TestRunBQT(t *testing.T) {
+	// Simple test
 	test, err := ParseTest("tests_data/test1.json")
 	err = RunTests("local", []Test{test})
 	assert.Nil(t, err)
-	//assert.Equal(t, s, "as")
 
+	// Simple test with aliases and various tables
+	test2, err := ParseTest("tests_data/test2.json")
+	err = RunTests("local", []Test{test2})
+	assert.Nil(t, err)
+
+	// failing test with missing data
+	test3, err := ParseTest("tests_data/test3.json")
+	err = RunTests("local", []Test{test3})
+	assert.NotNil(t, err)
+
+	// failing test with extra data
+	test4, err := ParseTest("tests_data/test4.json")
+	err = RunTests("local", []Test{test4})
+	assert.NotNil(t, err)
+
+	// failing test with extra data and missing data
+	test5, err := ParseTest("tests_data/test4.json")
+	err = RunTests("local", []Test{test5})
+	assert.NotNil(t, err)
 }
