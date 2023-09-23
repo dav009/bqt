@@ -52,7 +52,7 @@
         let pkgs = nixpkgsFor.${system};
         in {
           default = pkgs.mkShell {
-            buildInputs = with pkgs; [ go_1_21 gopls gotools golint clang_14 ];
+            buildInputs = with pkgs; [ go_1_21 gopls gotools golint clang_14 goreleaser ];
             GOROOT = "${pkgs.go_1_21}/share/go";
           };
         });
