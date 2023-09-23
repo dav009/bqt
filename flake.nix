@@ -39,7 +39,7 @@
       apps = forAllSystems (system: rec {
         bqt = {
           type = "app";
-          program = "${self.packages.${system}.nix_sample}/bin/bqt";
+          program = "${self.packages.${system}.bqt}/bin/bqt";
         };
         default = bqt;
       });
