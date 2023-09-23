@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Replacement struct {
@@ -53,14 +54,15 @@ func ParseFolder(path string) ([]Test, error) {
 		return []Test{}, err
 	}
 	for _, f := range files {
-
-		fullPath := filepath.Join(path, f.Name())
-		fmt.Println(fullPath)
-		test, err := ParseTest(fullPath)
-		if err != nil {
-			return []Test{}, err
+		if strings.HasSuffix(strings.ToLower(f.Name()), ".json") {
+			fullPath := filepath.Join(path, f.Name())
+			test, err := ParseTest(fullPath)
+			if err != nil {
+				return []Test{}, err
+			}
+			fmt.Println(fmt.Sprintf("Detected test: %v", fullPath))
+			tests = append(tests, test)
 		}
-		tests = append(tests, test)
 
 	}
 	return tests, nil
