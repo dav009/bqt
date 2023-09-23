@@ -1,0 +1,15 @@
+{
+    "name": "simple_test",
+    "file": "tests_data/test1.sql",
+    "mocks": {
+        "`dataset`.`table`": {
+            "filepath": "tests_data/test1_in1.csv",
+            "types": {
+                "c1": "int64"
+            }
+       }
+    },
+    "output": {
+        "filepath": "tests_data/out.csv"
+    }
+}

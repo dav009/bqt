@@ -1,0 +1,15 @@
+{
+    "name": "dummy_test",
+    "file": "tests_data/dummy_model.sql",
+    "mocks": {
+        "something": {
+            "filepath": "tests_data/something.csv",
+            "types": {
+                "c1": "int64"
+            }
+       }
+    },
+    "output": {
+        "filepath": "tests_data/out.csv"
+    }
+}
