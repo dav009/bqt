@@ -33,7 +33,7 @@
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
-            nativeBuildInputs = with pkgs; [ clang_14 ];
+            nativeBuildInputs = with pkgs; [ clang_16 ];
           };
           default = bqt;
         });
@@ -59,7 +59,7 @@
               gopls
               gotools
               golint
-              clang_14
+              clang_16
               goreleaser
             ];
             GOROOT = "${pkgs.go_1_21}/share/go";
