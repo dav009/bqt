@@ -20,5 +20,5 @@ jobs:
       - name: Run tests
         run: nix develop --command go test
         
-      - name: Build TODOs Docker image
+      - name: Build binary
         run: nix build 
