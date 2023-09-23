@@ -19,10 +19,11 @@ type Output struct {
 }
 
 type Test struct {
-	Name   string          `json:"name"`
-	File   string          `json:"file"`
-	Mocks  map[string]Mock `json:"mocks"`
-	Output Mock            `json:"output"`
+	Name        string          `json:"name"`
+	File        string          `json:"file"`
+	Mocks       map[string]Mock `json:"mocks"`
+	Output      Mock            `json:"output"`
+	FileContent string
 }
 
 type Replacement struct {
@@ -46,6 +47,11 @@ func ParseTest(path string) (Test, error) {
 	}
 	test := Test{}
 	if err := json.Unmarshal(bytes, &test); err != nil {
+		return Test{}, err
+	}
+	sqlQuery, err := ReadContents(test.File)
+	test.FileContent = sqlQuery
+	if err != nil {
 		return Test{}, err
 	}
 	return test, nil

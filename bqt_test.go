@@ -1,7 +1,6 @@
 package bqt
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
@@ -53,13 +52,13 @@ func TestMockToSqlWithTypes(t *testing.T) {
 }
 
 func TestParseJson(t *testing.T) {
-	fmt.Println("parsing")
 	test, err := ParseTest("test.json")
 	assert.Nil(t, err)
 	expectedTest := Test{
-		Name:   "dummy_test",
-		Output: Mock{Filepath: "out.csv"},
-		File:   "dummy_model.sql",
+		Name:        "dummy_test",
+		Output:      Mock{Filepath: "out.csv"},
+		File:        "dummy_model.sql",
+		FileContent: "select a,b,c from `dataset`.`table`",
 		Mocks: map[string]Mock{
 			"something": Mock{
 				Filepath: "something.csv",

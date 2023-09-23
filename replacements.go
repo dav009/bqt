@@ -83,19 +83,15 @@ func ReadContents(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(content), nil
+	c := string(content)
+	return strings.TrimSpace(c), nil
 }
 
 /*
    Given a Test it generates the SQL code that mocks data, run the needed logic and asserts the output data
 */
 func GenerateTestSQL(t Test) (SQLTestQuery, error) {
-
-	sqlQuery, err := ReadContents(t.File)
-	if err != nil {
-		return SQLTestQuery{}, err
-	}
-	queryWithMockedData, err := sql(sqlQuery, t.Mocks)
+	queryWithMockedData, err := sql(t.FileContent, t.Mocks)
 	if err != nil {
 		return SQLTestQuery{}, err
 	}
