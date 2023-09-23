@@ -55,7 +55,8 @@ func TestParseJson(t *testing.T) {
 	test, err := ParseTest("tests_data/test1.json")
 	assert.Nil(t, err)
 	expectedTest := Test{
-		Name: "simple_test",
+		SourceFile: "tests_data/test1.json",
+		Name:       "simple_test",
 		Output: Mock{
 			Filepath: "tests_data/out.csv",
 			Types: map[string]string{
