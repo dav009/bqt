@@ -30,7 +30,7 @@
               inherit version;
               src = ./.;
               vendorSha256 =
-                "sha256-PEn81rz846WwG+zaWyJ7aRCh4tF4ifaF7rbMfy3PMB0=";
+                "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
             };
             default = bqt;
           });
@@ -52,7 +52,7 @@
         let pkgs = nixpkgsFor.${system};
         in {
           default = pkgs.mkShell {
-            buildInputs = with pkgs; [ go_1_21 gopls gotools golint ];
+            buildInputs = with pkgs; [ go_1_21 gopls gotools golint clang_14 ];
             GOROOT = "${pkgs.go_1_21}/share/go";
           };
         });
