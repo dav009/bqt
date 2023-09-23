@@ -28,8 +28,8 @@
             src = ./.;
             CGO_ENABLED = 1;
             preBuild = ''
-             export CXX = "clang++";
-             export CC = "clang";
+             export CXX="clang++";
+             export CC="clang";
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
