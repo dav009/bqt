@@ -216,13 +216,11 @@ func RunTests(mode string, tests []Test) error {
 			return err
 		}
 		fmt.Println("Running: Query minus Expectation")
-		fmt.Println(sqlQueries.QueryMinusExpected)
-		fmt.Println("end of query..")
 		err = RunQueryMinusExpectation(ctx, client, sqlQueries.QueryMinusExpected)
 		if err != nil {
 			lastErr = err
 		}
-		fmt.Println("Running:Expectation minus Query")
+		fmt.Println("Running: Expectation minus Query")
 		err = RunExpectationMinusQuery(ctx, client, sqlQueries.ExpectedMinusQuery)
 		if err != nil {
 			lastErr = err

@@ -23,12 +23,6 @@ func TestCommand() cli.Command {
 			Required: false,
 		},
 			&cli.StringFlag{
-				Name:     "manifest",
-				Value:    "target/manifest.json",
-				Usage:    "Path to your dbt's manifest.json",
-				Required: false,
-			},
-			&cli.StringFlag{
 				Name:     "mode",
 				Value:    "local",
 				Usage:    "`local` (default) runs your test on a BQ emulator. 'cloud': runs your queries on the cloud",
@@ -36,11 +30,8 @@ func TestCommand() cli.Command {
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			manifestPath := cCtx.String("manifest")
 			mode := cCtx.String("mode")
 			testsPath := cCtx.String("tests")
-			fmt.Println("Using Manifest: ", manifestPath)
-			fmt.Println("Parsed Manifest! ")
 			fmt.Println("Parsing tests in: ", testsPath)
 			tests, err := bqt.ParseFolder(testsPath)
 			if err != nil {
@@ -65,12 +56,6 @@ func GenerateSQL() cli.Command {
 		Usage:   "Generate the SQL queries used for tests",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "manifest",
-				Value:    "target/manifest.json",
-				Usage:    "Path to your dbt's manifest.json",
-				Required: false,
-			},
-			&cli.StringFlag{
 				Name:     "tests",
 				Value:    "unit_tests/",
 				Usage:    "Path to your folder containing json test definitions",
@@ -90,13 +75,9 @@ func GenerateSQL() cli.Command {
 			},
 		},
 		Action: func(cCtx *cli.Context) error {
-			manifestPath := cCtx.String("manifest")
 			testsPath := cCtx.String("tests")
 			output := cCtx.String("output")
 			flavor := cCtx.String("flavor")
-			fmt.Println("Using Manifest: ", manifestPath)
-
-			fmt.Println("Parsed Manifest! ")
 			fmt.Println("Parsing tests in: ", testsPath)
 			tests, err := bqt.ParseFolder(testsPath)
 			if err != nil {
@@ -148,7 +129,7 @@ func main() {
 	testCmd := TestCommand()
 	genCmd := GenerateSQL()
 	app := cli.NewApp()
-	app.Name = "dbtmock"
+	app.Name = "bqt"
 	app.Usage = ""
 	app.Commands = []*cli.Command{
 		&testCmd,
