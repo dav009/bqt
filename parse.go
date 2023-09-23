@@ -20,7 +20,7 @@ type Output struct {
 
 type Test struct {
 	Name   string          `json:"name"`
-	Model  string          `json:"model"`
+	File   string          `json:"file"`
 	Mocks  map[string]Mock `json:"mocks"`
 	Output Mock            `json:"output"`
 }

@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,65 +16,6 @@ import (
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
-
-// returns a Manifest structure out of a .json file
-func ParseManifest(path string) Manifest {
-
-	jsonFile, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	bytes, _ := ioutil.ReadAll(jsonFile)
-	manifest := Manifest{}
-	if err := json.Unmarshal(bytes, &manifest); err != nil {
-		panic(err)
-	}
-	return manifest
-}
-
-/*
-   returns a Test structure given a filepath
-*/
-func ParseTest(path string) (Test, error) {
-
-	jsonFile, err := os.Open(path)
-	if err != nil {
-		return Test{}, err
-	}
-	bytes, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return Test{}, err
-	}
-	test := Test{}
-	if err := json.Unmarshal(bytes, &test); err != nil {
-		return Test{}, err
-	}
-	return test, nil
-}
-
-/*
-   Given a folder returns a list of Test structs
-*/
-func ParseFolder(path string) ([]Test, error) {
-
-	files, err := ioutil.ReadDir(path)
-	tests := []Test{}
-	if err != nil {
-		return []Test{}, err
-	}
-	for _, f := range files {
-
-		fullPath := filepath.Join(path, f.Name())
-		fmt.Println(fullPath)
-		test, err := ParseTest(fullPath)
-		if err != nil {
-			return []Test{}, err
-		}
-		tests = append(tests, test)
-
-	}
-	return tests, nil
-}
 
 func SaveSQL(path string, sql string) error {
 	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
@@ -151,7 +90,7 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 	return err
 }
 
-func RunTests(mode string, tests []Test, m Manifest) error {
+func RunTests(mode string, tests []Test) error {
 	ctx := context.Background()
 	const (
 		projectID = "fq-stage-bigquery"
@@ -203,7 +142,7 @@ func RunTests(mode string, tests []Test, m Manifest) error {
 	var lastErr error = nil
 
 	for _, t := range tests {
-		sqlQueries, err := GenerateTestSQL(t, m)
+		sqlQueries, err := GenerateTestSQL(t)
 
 		if err != nil {
 			return err

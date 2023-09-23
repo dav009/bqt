@@ -2,15 +2,10 @@ package bqt
 
 import (
 	"fmt"
+	"io/ioutil"
 	"regexp"
 	"strings"
 )
-
-type Replacement struct {
-	TableFullName  string
-	ReplaceSql     string
-	TableShortName string
-}
 
 /*
    Given a SQL query and a replacement Struct, it applies the recplament on the SQL and returns a new SQL query.   References to a Table are replaced
@@ -35,7 +30,7 @@ func Replace(sql string, replacement Replacement) string {
    Given the SQL code of a model and an Expected Output mock,
    This function returns a SQL  query which asserts that the output table of SQL is equal to the data contained in the mock
 */
-func assertSQLCode(sql string, m Mock) (string, error) {
+func queryMinusMock(sql string, m Mock) (string, error) {
 
 	mockedSql, err := mockToSql(m)
 	if err != nil {
@@ -45,32 +40,73 @@ func assertSQLCode(sql string, m Mock) (string, error) {
 	return fmt.Sprintf("SELECT %s FROM( %s ) \n  EXCEPT DISTINCT \n SELECT %s FROM (%s)", columns, sql, columns, mockedSql.Sql), nil
 }
 
-func sql(queryToTest string, mocks map[string]Mock) (Replacement, error) {
-	sqlCode := queryToTest // load sql file here
-	replacement := Replacement{ReplaceSql: sqlCode, TableFullName: fullname, TableShortName: shortname}
-	sqlCode = Replace(sqlCode, replacement)
-	return replacement, nil
+func tableShortName(tableFullName string) string {
+
+	parts := strings.Split(tableFullName, ".") // Split the string by dot
+	lastItem := parts[len(parts)-1]            // Get the last item
+	return lastItem
 }
 
-func sql(nodeKey string, mocks map[string]Mock) (Replacement, error) {
-	sqlCode = Replace(sqlCode, replacement)
-	replacement := Replacement{ReplaceSql: sqlCode, TableFullName: fullname, TableShortName: shortname}
-	return replacement, nil
+func sql(sqlToTest string, mocks map[string]Mock) (string, error) {
+	for tablefullName, mock := range mocks {
+		mockSql, err := mockToSql(mock)
+		if err != nil {
+			return "", err
+		}
+		tableShortName := tableShortName(tablefullName)
+		r := Replacement{ReplaceSql: mockSql.Sql,
+			TableFullName: tablefullName, TableShortName: tableShortName}
+		sqlToTest = Replace(sqlToTest, r)
+	}
+
+	return sqlToTest, nil
+}
+
+func mockMinusQuery(sql string, output Mock) (string, error) {
+
+	mockedSql, err := mockToSql(output)
+	if err != nil {
+		return "", err
+	}
+	columns := strings.Join(mockedSql.Columns, ",")
+	return fmt.Sprintf("SELECT %s FROM( %s ) \n  EXCEPT DISTINCT \n SELECT %s FROM (%s)", columns, mockedSql.Sql, columns, sql), nil
+}
+
+type SQLTestQuery struct {
+	ExpectedMinusQuery  string
+	QueryMinusExpected  string
+	QueryWithMockedData string
+}
+
+func ReadContents(path string) (string, error) {
+	content, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return string(content), nil
 }
 
 /*
    Given a Test it generates the SQL code that mocks data, run the needed logic and asserts the output data
 */
+func GenerateTestSQL(t Test) (SQLTestQuery, error) {
 
-func GenerateTestSQL(t Test) (string, error) {
+	sqlQuery, err := ReadContents(t.File)
+	if err != nil {
+		return SQLTestQuery{}, err
+	}
+	queryWithMockedData, err := sql(sqlQuery, t.Mocks)
+	if err != nil {
+		return SQLTestQuery{}, err
+	}
+	sqlQueryMinusExpectation, err := queryMinusMock(queryWithMockedData, t.Output)
+	if err != nil {
+		return SQLTestQuery{}, err
+	}
+	sqlExpectationMinusQuery, err := mockMinusQuery(queryWithMockedData, t.Output)
+	if err != nil {
+		return SQLTestQuery{}, err
+	}
 
-	replacement, err := sql(t.Model, t.Mocks)
-	if err != nil {
-		return "", err
-	}
-	sql, err := assertSQLCode(replacement.ReplaceSql, t.Output)
-	if err != nil {
-		return "", err
-	}
-	return sql, nil
+	return SQLTestQuery{QueryMinusExpected: sqlQueryMinusExpectation, ExpectedMinusQuery: sqlExpectationMinusQuery, QueryWithMockedData: queryWithMockedData}, nil
 }

@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/dav009/bqt"
+
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -38,16 +40,15 @@ func TestCommand() cli.Command {
 			mode := cCtx.String("mode")
 			testsPath := cCtx.String("tests")
 			fmt.Println("Using Manifest: ", manifestPath)
-			m := dbtmock.ParseManifest(manifestPath)
 			fmt.Println("Parsed Manifest! ")
 			fmt.Println("Parsing tests in: ", testsPath)
-			tests, err := dbtmock.ParseFolder(testsPath)
+			tests, err := bqt.ParseFolder(testsPath)
 			if err != nil {
 				return err
 			}
 			fmt.Println("Parsed Tests: ", len(tests))
 			fmt.Println("Running Tests...")
-			err = dbtmock.RunTests(mode, tests, m)
+			err = bqt.RunTests(mode, tests)
 			if err != nil {
 				fmt.Println("ERROR")
 				return err
@@ -94,10 +95,10 @@ func GenerateSQL() cli.Command {
 			output := cCtx.String("output")
 			flavor := cCtx.String("flavor")
 			fmt.Println("Using Manifest: ", manifestPath)
-			m := dbtmock.ParseManifest(manifestPath)
+
 			fmt.Println("Parsed Manifest! ")
 			fmt.Println("Parsing tests in: ", testsPath)
-			tests, err := dbtmock.ParseFolder(testsPath)
+			tests, err := bqt.ParseFolder(testsPath)
 			if err != nil {
 				return err
 			}
@@ -105,18 +106,18 @@ func GenerateSQL() cli.Command {
 			fmt.Println("Generating SQL...")
 			if flavor == "simple" {
 				for _, t := range tests {
-					modelSql, err := dbtmock.GenerateModelSQL(t, m)
+					sqlQueries, err := bqt.GenerateTestSQL(t)
 					if err != nil {
 						return err
 					}
 					path := filepath.Join(output, t.Name+".sql")
-					err = dbtmock.SaveSQL(path, modelSql)
+					err = bqt.SaveSQL(path, sqlQueries.QueryWithMockedData)
 				}
 			}
 			if flavor == "test " {
 				for _, t := range tests {
 					fmt.Println("Generating Test: ", t.Name)
-					sqlQueries, err := dbtmock.GenerateTestSQL(t, m)
+					sqlQueries, err := bqt.GenerateTestSQL(t)
 					if err != nil {
 						return err
 					}
@@ -124,14 +125,14 @@ func GenerateSQL() cli.Command {
 					path := filepath.Join(output, t.Name+"_"+"ExpectedMinusQuery"+".sql")
 					fmt.Println("Saving Test: ", path)
 					fmt.Println(sqlQueries.ExpectedMinusQuery)
-					err = dbtmock.SaveSQL(path, sqlQueries.ExpectedMinusQuery)
+					err = bqt.SaveSQL(path, sqlQueries.ExpectedMinusQuery)
 					if err != nil {
 						return err
 					}
 
 					path = filepath.Join(output, t.Name+"_"+"QueryMinusExpected"+".sql")
 					fmt.Println("Saving Test: ", path)
-					err = dbtmock.SaveSQL(path, sqlQueries.QueryMinusExpected)
+					err = bqt.SaveSQL(path, sqlQueries.QueryMinusExpected)
 					if err != nil {
 						return err
 					}
