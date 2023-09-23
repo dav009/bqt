@@ -37,6 +37,7 @@ func ParseTest(path string) (Test, error) {
 	}
 	sqlQuery, err := ReadContents(test.File)
 	test.FileContent = sqlQuery
+	test.SourceFile = path
 	if err != nil {
 		return Test{}, err
 	}

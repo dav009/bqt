@@ -28,6 +28,7 @@ type Output struct {
 }
 
 type Test struct {
+	SourceFile  string
 	Name        string          `json:"name"`
 	File        string          `json:"file"`
 	Mocks       map[string]Mock `json:"mocks"`
@@ -99,9 +100,7 @@ func mockToSql(m Mock) (SQLMock, error) {
 }
 
 func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, query string) error {
-	fmt.Println("qyerying...")
 	q := client.Query((query))
-	fmt.Println("reading....")
 	it, err := q.Read(ctx)
 	if err != nil {
 		return err
@@ -116,15 +115,13 @@ func RunQueryMinusExpectation(ctx context.Context, client *bigquery.Client, quer
 			return err
 		}
 
-		color.Green("-------------")
+		color.Green("\t------Unexpected Data-------")
 		for i, field := range it.Schema {
-			record := fmt.Sprintf("%s : %v", field.Name, row[i])
+			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
 			color.Green(record)
 
 		}
-		color.Green("-------------")
-		//color.Green(strings.Join(columns, "\t"))
-		//color.Green(fmt.Sprintf("%v", row))
+		color.Green("\t-------------")
 		err = errors.New("Query returned extra data compared to expectation..")
 	}
 
@@ -144,15 +141,14 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 			}
 			return err
 		}
-		color.Red("-------------")
+		color.Red("\t------Missing Data-------")
 		for i, field := range it.Schema {
-			record := fmt.Sprintf("%s : %v", field.Name, row[i])
+			record := fmt.Sprintf("\t%s : %v", field.Name, row[i])
 			color.Red(record)
 
 		}
-		color.Red("-------------")
-		color.Red(fmt.Sprintf("%v", row))
-		err = errors.New("Expected data was not fully completed..")
+		color.Red("\t-------------")
+		err = errors.New("Expected data is missing..")
 
 	}
 	return err
@@ -210,22 +206,29 @@ func RunTests(mode string, tests []Test) error {
 	var lastErr error = nil
 
 	for _, t := range tests {
+		fmt.Println("")
+		fmt.Println(fmt.Sprintf("Running Test: %+v : %+v", t.Name, t.SourceFile))
 		sqlQueries, err := GenerateTestSQL(t)
 
 		if err != nil {
 			return err
 		}
-		fmt.Println("Running: Query minus Expectation")
 		err = RunQueryMinusExpectation(ctx, client, sqlQueries.QueryMinusExpected)
 		if err != nil {
 			lastErr = err
 		}
-		fmt.Println("Running: Expectation minus Query")
 		err = RunExpectationMinusQuery(ctx, client, sqlQueries.ExpectedMinusQuery)
+		if err == nil {
+			fmt.Printf("✅ Test Success: %+v : %+v\n", t.Name, t.SourceFile)
+		}
 		if err != nil {
+			fmt.Printf("\tError: %+v\n", err)
+			fmt.Printf("❌ Test Failed: %+v : %+v\n", t.Name, t.SourceFile)
 			lastErr = err
 		}
-
+	}
+	if lastErr != nil {
+		lastErr = errors.New("Some tests failed")
 	}
 	return lastErr
 }
