@@ -10,6 +10,9 @@
        }
     },
     "output": {
-        "filepath": "tests_data/out.csv"
+        "filepath": "tests_data/out.csv",
+        "types": {
+                "column1": "string"
+            }
     }
 }

@@ -52,22 +52,28 @@ func TestMockToSqlWithTypes(t *testing.T) {
 }
 
 func TestParseJson(t *testing.T) {
-	test, err := ParseTest("tests_data/test.json")
+	test, err := ParseTest("tests_data/test1.json")
 	assert.Nil(t, err)
 	expectedTest := Test{
-		Name:        "dummy_test",
-		Output:      Mock{Filepath: "tests_data/out.csv"},
-		File:        "tests_data/dummy_model.sql",
-		FileContent: "select a,b,c from `dataset`.`table`",
+		Name: "simple_test",
+		Output: Mock{
+			Filepath: "tests_data/out.csv",
+			Types: map[string]string{
+				"column1": "string",
+			},
+		},
+		File:        "tests_data/test1.sql",
+		FileContent: "select column1 from `dataset`.`table`",
 		Mocks: map[string]Mock{
-			"something": Mock{
-				Filepath: "tests_data/something.csv",
+			"`dataset`.`table`": Mock{
+				Filepath: "tests_data/test1_in1.csv",
 				Types: map[string]string{
 					"c1": "int64",
 				},
 			},
 		},
 	}
+
 	assert.Equal(t, test, expectedTest)
 }
 

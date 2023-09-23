@@ -41,7 +41,7 @@ func TestCommand() cli.Command {
 			fmt.Println("Running Tests...")
 			err = bqt.RunTests(mode, tests)
 			if err != nil {
-				fmt.Println("ERROR")
+				fmt.Printf("Error: %s\n", err)
 				return err
 			}
 			return nil
