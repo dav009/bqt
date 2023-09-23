@@ -99,6 +99,21 @@ this test:
 - `dataset`.`table` this table in the SQL query is mocked with data defined in `tests_data/test1_in1.csv`
 - the output of this query has to match the data defined in `tests_data/out.csv`
 
+## Installation
+
+### Nix 
+
+- `nix build`
+- `bqt --help`
+
+### Other
+
+- `go install github.com/dav009/bqt/cmd/bqt@latest`
+
+### Download from releases
+
+- Download binary from Github releases
+
 ## Details
 
 - bqt runs a BQ simulator to run queries
