@@ -27,10 +27,8 @@
             inherit version;
             src = ./.;
             CGO_ENABLED = 1;
-            preBuild = ''
-             export CXX="clang++";
-             export CC="clang";
-            '';
+            CXX="clang++";
+            CC="clang";
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
             nativeBuildInputs = with pkgs; [ clang_14 ];
