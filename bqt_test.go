@@ -28,7 +28,7 @@ func TestReplacePreviousAlias(t *testing.T) {
 }
 
 func TestMockToSql(t *testing.T) {
-	m := Mock{Filepath: "sample.csv"}
+	m := Mock{Filepath: "tests_data/sample.csv"}
 	mockAsSQl, err := mockToSql(m)
 	assert.Nil(t, err)
 	expectedSQL1 := "SELECT \"something\" AS column1, \"1.0\" AS column2, \"100\" AS column3"
@@ -40,7 +40,7 @@ func TestMockToSql(t *testing.T) {
 }
 
 func TestMockToSqlWithTypes(t *testing.T) {
-	m := Mock{Filepath: "sample.csv", Types: map[string]string{"column2": "INT64"}}
+	m := Mock{Filepath: "tests_data/sample.csv", Types: map[string]string{"column2": "INT64"}}
 	mockAsSQl, err := mockToSql(m)
 	assert.Nil(t, err)
 	expectedSQL1 := "SELECT \"something\" AS column1, CAST(\"1.0\" AS INT64) AS column2, \"100\" AS column3"
@@ -52,16 +52,16 @@ func TestMockToSqlWithTypes(t *testing.T) {
 }
 
 func TestParseJson(t *testing.T) {
-	test, err := ParseTest("test.json")
+	test, err := ParseTest("tests_data/test.json")
 	assert.Nil(t, err)
 	expectedTest := Test{
 		Name:        "dummy_test",
-		Output:      Mock{Filepath: "out.csv"},
-		File:        "dummy_model.sql",
+		Output:      Mock{Filepath: "tests_data/out.csv"},
+		File:        "tests_data/dummy_model.sql",
 		FileContent: "select a,b,c from `dataset`.`table`",
 		Mocks: map[string]Mock{
 			"something": Mock{
-				Filepath: "something.csv",
+				Filepath: "tests_data/something.csv",
 				Types: map[string]string{
 					"c1": "int64",
 				},
@@ -69,4 +69,12 @@ func TestParseJson(t *testing.T) {
 		},
 	}
 	assert.Equal(t, test, expectedTest)
+}
+
+func TestRunBQT(t *testing.T) {
+	test, err := ParseTest("tests_data/test1.json")
+	err = RunTests("local", []Test{test})
+	assert.Nil(t, err)
+	//assert.Equal(t, s, "as")
+
 }
