@@ -1,6 +1,6 @@
 module github.com/dav009/bqt
 
-go 1.18
+go 1.21
 
 require (
 	cloud.google.com/go/bigquery v1.55.0
