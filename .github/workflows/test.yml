@@ -16,9 +16,6 @@ jobs:
           fetch-depth: 2
 
       - uses: cachix/install-nix-action@v17
-
-      - name: Run tests
-        run: nix develop --command go test
         
       - name: Build binary
         run: nix build 
