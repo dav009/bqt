@@ -96,7 +96,7 @@ sample test:
 
 this test:
 - `tests_data/test1.sql` this is the query being tested
-- `\`dataset\`.\`table\`` this table in the SQL query is mocked with data defined in `tests_data/test1_in1.csv`
+- `/`dataset/`./`table/`` this table in the SQL query is mocked with data defined in `tests_data/test1_in1.csv`
 - the output of this query has to match the data defined in `tests_data/out.csv`
 
 ## Details
