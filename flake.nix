@@ -33,7 +33,7 @@
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
-            nativeCheckInputs = with pkgs; [ clang_14 ];
+            nativeBuildInputs = with pkgs; [ clang_14 ];
           };
           default = bqt;
         });
