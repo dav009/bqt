@@ -1,30 +1,15 @@
 package bqt
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 )
-
-/* Describing Tests as structures */
-type Mock struct {
-	Filepath string            `json:"filepath"`
-	Types    map[string]string `json:"types"`
-}
-
-type Output struct {
-	Name string `json:"name"`
-}
-
-type Test struct {
-	Name        string          `json:"name"`
-	File        string          `json:"file"`
-	Mocks       map[string]Mock `json:"mocks"`
-	Output      Mock            `json:"output"`
-	FileContent string
-}
 
 type Replacement struct {
 	TableFullName  string
@@ -79,4 +64,47 @@ func ParseFolder(path string) ([]Test, error) {
 
 	}
 	return tests, nil
+}
+
+/*
+   Utility Function, converts a CSV file into a List of dictionaries.
+   Each row is converted into a dictionary where the keys are columns.
+*/
+func CSVToMap(reader io.Reader) []map[string]string {
+
+	r := csv.NewReader(reader)
+	rows := []map[string]string{}
+	var header []string
+	for {
+		record, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		if header == nil {
+			header = record
+		} else {
+			dict := map[string]string{}
+			for i := range header {
+				dict[header[i]] = record[i]
+			}
+			rows = append(rows, dict)
+		}
+	}
+	return rows
+}
+
+func SaveSQL(path string, sql string) error {
+	err := os.MkdirAll(filepath.Dir(path), os.ModePerm)
+	if err != nil {
+		return err
+	}
+	data := []byte(sql)
+	err = ioutil.WriteFile(path, data, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }
