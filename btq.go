@@ -157,7 +157,7 @@ func RunExpectationMinusQuery(ctx context.Context, client *bigquery.Client, quer
 func RunTests(mode string, tests []Test) error {
 	ctx := context.Background()
 	const (
-		projectID = "fq-stage-bigquery"
+		projectID = "dummybqproject"
 		datasetID = "dataset1"
 		routineID = "routine1"
 	)

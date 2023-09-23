@@ -103,7 +103,9 @@ this test:
 
 ### Nix 
 
-- `nix build`
+You can use the nix flake to build/run/develop this project:
+
+- `nix build github:dav009/bqt`
 - `bqt --help`
 
 ### Other
