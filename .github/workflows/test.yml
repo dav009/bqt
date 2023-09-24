@@ -20,11 +20,21 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
+          
       - name: Display Go version
         run: go version
+        
       - name: Install dependencies
         run: go get .
+        
       - name: Build
         run: go build -v ./...
+        env:
+          CC: clang
+          CXX: clang++
+        
       - name: Test with the Go CLI
         run: go test
+        env:
+          CC: clang
+          CXX: clang++

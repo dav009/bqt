@@ -1,7 +1,7 @@
 # .goreleaser.yml
 project_name: bqt
 builds:
-  - env: [CGO_ENABLED=1]
+  - env: [CGO_ENABLED=1, CC=clang, CXX=clang++]
     goos:
       - linux
       - darwin
