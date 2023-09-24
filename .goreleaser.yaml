@@ -1,13 +1,24 @@
 # .goreleaser.yml
 project_name: bqt
 builds:
-  - env: [CGO_ENABLED=1, CC=clang, CXX=clang++]
+  - id: darwin
+    env: [CGO_ENABLED=1, CC=clang, CXX=clang++]
     goos:
       - linux
       - darwin
     goarch:
       - amd64
       - arm64
+    id: "bqt"
+    dir: .
+    main: ./cmd/bqt
+    
+ - id: linux
+    env: [CGO_ENABLED=1, CC=clang, CXX=clang++]
+    goos:
+      - linux
+    goarch:
+      - amd64
     id: "bqt"
     dir: .
     main: ./cmd/bqt
