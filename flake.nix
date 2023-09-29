@@ -28,12 +28,12 @@
             src = ./.;
             CGO_ENABLED = 1;
             preBuild = ''
-             export CC=clang
-             export CXX="clang++";
+             export CC=${pkgs.clang_14}/bin/clang
+             export CXX=${pkgs.clang_14}/bin/clang++
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
-            nativeBuildInputs = with pkgs; [ clang_16 ];
+            buildInputs =  [ pkgs.clang_14 ];
           };
           default = bqt;
         });
