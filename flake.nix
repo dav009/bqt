@@ -28,12 +28,20 @@
             src = ./.;
             CGO_ENABLED = 1;
             preBuild = ''
-             export CC=clang
-             export CXX="clang++";
+              export CC=${pkgs.clang_14}/bin/clang
+              export CXX=${pkgs.clang_14}/bin/clang++
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
-            nativeBuildInputs = with pkgs; [ clang_16 ];
+            LD_LIBRARY_PATH = (pkgs.lib.strings.makeLibraryPath [
+              pkgs.stdenv.cc.cc.lib
+              pkgs.llvmPackages_14.libclang.lib
+            ]);
+            buildInputs = [
+              pkgs.clang_14
+              pkgs.llvmPackages_14.llvm
+              pkgs.llvmPackages_14.libclang
+            ];
           };
           default = bqt;
         });

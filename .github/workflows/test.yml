@@ -10,31 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        go-version: [ '1.21.x' ]
-
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go-version }}
-          
-      - name: Display Go version
-        run: go version
+          fetch-depth: 2
+
+      - uses: cachix/install-nix-action@v17
         
-      - name: Install dependencies
-        run: go get .
-        
-      - name: Build
-        run: go build -v ./...
-        env:
-          CC: clang
-          CXX: clang++
-        
-      - name: Test with the Go CLI
-        run: go test
-        env:
-          CC: clang
-          CXX: clang++
+      - name: Build binary
+        run: nix build --log-lines 1000000
