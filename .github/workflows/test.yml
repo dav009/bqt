@@ -18,4 +18,4 @@ jobs:
       - uses: cachix/install-nix-action@v17
         
       - name: Build binary
-        run: nix build 
+        run: nix build --log-lines 1000000
