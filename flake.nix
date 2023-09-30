@@ -33,9 +33,6 @@
             '';
             vendorSha256 =
               "sha256-sjg+D0IIErl21HZjXBNKBTqXBZfy6w6EhHYS0seUE3k=";
-             ldflags = [
-               "-extldflags -static"
-            ];
             LD_LIBRARY_PATH = (pkgs.lib.strings.makeLibraryPath [
               pkgs.stdenv.cc.cc.lib
               pkgs.llvmPackages_14.libclang.lib
